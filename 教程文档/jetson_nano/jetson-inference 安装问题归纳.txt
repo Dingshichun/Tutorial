@@ -1,0 +1,55 @@
+（1）下载 jetson-inference 的两种路径
+github download: git clone --recursive --depth=1 https://github.com/dusty-nv/jetson-inference
+
+gitee download: git clone https://gitee.com/vcan123/jetson-inference
+
+（2）换源命令
+sed -in-place -e 's@https://nvidia.box.com/shared/static@https://bbs.gpuworld.cn/mirror@g' download-models.sh
+sed -in-place -e 's@https://nvidia.box.com/shared/static@https://bbs.gpuworld.cn/mirror@g' install-pytorch.sh
+sed -in-place -e 's@https://github.com/pytorch/vision@https://gitee.com/vcan123/pytorch@g' install-pytorch.sh
+sed -in-place -e 's@https://github.com/dusty-nv/vision@https://gitee.com/vcan123/dusty-nv@g' install-pytorch.sh
+
+（3）hosts 文件加入以下内容
+192.30.253.112 github.com
+192.30.253.119 gist.github.com
+151.101.100.133 assets-cdn.github.com
+151.101.100.133 raw.githubusercontent.com
+151.101.100.133 gist.githubusercontent.com
+151.101.100.133 cloud.githubusercontent.com
+151.101.100.133 camo.githubusercontent.com
+151.101.100.133 avatars0.githubusercontent.com
+151.101.100.133 avatars1.githubusercontent.com
+151.101.100.133 avatars2.githubusercontent.com
+151.101.100.133 avatars3.githubusercontent.com
+151.101.100.133 avatars4.githubusercontent.com
+151.101.100.133 avatars5.githubusercontent.com
+151.101.100.133 avatars6.githubusercontent.com
+151.101.100.133 avatars7.githubusercontent.com
+151.101.100.133 avatars8.githubusercontent.com
+
+（4）删除示例文档，腾空间。
+删除示例文档：sudo dpkg -r --force-depends "cuda-documentation-10-2" "cuda-samples-10-2" "libnvinfer-samples" "libvisionworks-samples" "libnvinfer-doc" "vpi1-samples"
+
+（5）一些预训练模型下载
+wget https://github.com/dusty-nv/jetson-inference/releases/download/model-mirror-190618/GoogleNet.tar.gz
+wget https://github.com/dusty-nv/jetson-inference/releases/download/model-mirror-190618/ResNet-18.tar.gz
+wget https://github.com/dusty-nv/jetson-inference/releases/download/model-mirror-190618/AlexNet.tar.gz
+
+（6）解决 pytorch 安装了但是不能导入，往环境变量文件加入以下内容
+export OPENBLAS_CORETYPE=ARMV8
+
+（7）编译 jetson-inference 时可能出现的错误，表示子模块没有下载完全，需要重下，一般是网络问题导致
+[CMakeFiles/jetson-inference.dir/all] Error 2
+
+（8）其它
+sed -in-place -e 's@https://nvidia.box.com/shared/static@https://bbs.gpuworld.cn/mirror@g' CMakePreBuild.sh
+
+/home/nvidia/.local/bin
+/home/nvidia/.local/lib/python3.6/site-packages/torch/__init__.py
+
+ModuleNotFoundError: No module named 'numpy.core._multiarray_umath'
+
+ImportError: libjetson-utils.so: cannot open shared object file: No such file or directory
+
+jetson.utils -- compiled without NumPy array conversion support (warning)
+

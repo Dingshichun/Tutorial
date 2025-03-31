@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/calcu.h
+
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/calcu_test/main.cpp
+iostream
+-
+calcu.h
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/calcu_test/calcu.h
+

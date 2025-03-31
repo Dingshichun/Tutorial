@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared -Wl,-soname,libcalcu_shared.so -o ../lib/libcalcu_shared.so CMakeFiles/calcu_shared.dir/add.cpp.o CMakeFiles/calcu_shared.dir/multi.cpp.o 

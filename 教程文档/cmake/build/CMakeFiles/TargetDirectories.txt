@@ -1,0 +1,8 @@
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/calcu/CMakeFiles/edit_cache.dir
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/calcu/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/calcu/CMakeFiles/calcu_shared.dir
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/calcu_test/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/calcu_test/CMakeFiles/edit_cache.dir
+/mnt/c/Users/世兰丁/Desktop/jetson_nano开发/jetson_nano_b01开发环境配置/cmake/build/calcu_test/CMakeFiles/main.dir
