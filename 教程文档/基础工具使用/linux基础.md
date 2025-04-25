@@ -100,7 +100,7 @@
 # 将 name.txt 的硬链接创建到 ./user/name-hard ， name-hard 即为硬链接。
 ln ./name.txt ./user/name-hard 
 
-# 软链接的创建，必须使用绝对路径，否则会出错。格式： ln -s 源文件 目标文件
+# 软链接的创建，**必须使用绝对路径**，否则会出错。格式： ln -s 源文件 目标文件
 # 将 /root/name.txt 的软链接创建到 /root/user/name-soft ， name-soft 即为软链接。
 ln -s /root/name.txt /root/user/name-soft
 ```
@@ -190,7 +190,7 @@ Linux 不靠拓展名区分文件，而是靠权限，压缩包命名仍带有�
 压缩格式： zip 选项 压缩包名 源文件或目录
 # 将文件 file.txt 和 file1.txt 压缩为 file.zip
 zip file.zip file.txt file1.txt
-# 将目录 file 压缩为 file.zip， 选项 r 表示递归压缩。
+# 将目录 file 压缩为 file.zip， 选项 r 表示 recursive ，即递归压缩。
 zip -r file.zip file
 
 解压缩格式： unzip 选项 压缩包名
