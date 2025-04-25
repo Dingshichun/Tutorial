@@ -36,12 +36,23 @@ git 提交修改的顺序：工作区——>暂存区——>本地仓库——>�
 **主要命令**:  
 * git add: 将工作区修改的内容提交到暂存区，` git add .` 将所有修改的文件提交到暂存区  
 也可以仅指定一些已修改的文件提交到暂存区，比如 : `git add hello.py` 。
-* git commit: 将暂存区的内容提交到本地仓库，`-m` 选项表示 message ，即提交时的备注，  
-比如 `git commit -m "this is the first upload"`
-* git push: 将本地仓库的内容提交到远程仓库，需要先配置好远程仓库
-* git pull: 从远程仓库拉取
-* git reset: 撤销从暂存区提交到本地仓库的内容
+* git commit: 将暂存区的内容提交到本地仓库，`-m` 选项即 `--message` ，即提交时的备注，  
+比如 `git commit -m "this is the first upload"` ，也可以使用 `git commit --message "commit information"`
+* git commit --amend: 修改最近一次的提交信息或内容 
+* git push: 将本地仓库的内容提交到关联的远程仓库，需要先配置好远程仓库
+* git push origin <分支名>:推送本地分支到远程
+* git pull: 拉取远程分支并自动合并
+* git fetch: 仅拉取远程更新，但不自动合并
+* git remote add origin <URL>: 添加远程仓库地址 URL ，使得本地仓库可以上传到远程。
+* git remote -v: 查看远程仓库信息
+
+* git reset HEAD 文件名: 撤销从暂存区提交到本地仓库的内容
+* git restore 文件名：恢复文件到最近提交状态
+* git revert 某次提交ID：生成新提交以撤销某次更改（推荐用于公共分支）
 * git chekout: 撤销从工作区提交到暂存区的内容
+
+* git tag 标签名:创建轻量级标签，`git tag -d 标签名` 删除标签
+* git tag -a 标签名 --message "描述"：创建带描述的标签
 
 * git log: 查看提交历史
 * git status: 查看工作区和暂存区的状态
