@@ -158,6 +158,8 @@ docker cp 容器名或id:容器内的路径 主机的路径
 
 **镜像修改和上传到远程仓库**
 ```
+# 不推荐使用 docker commit，因为这对镜像的操作都是黑箱操作，除了制作镜像的人知道执行过什么命令、怎么生成的镜像外，别人无法得知，所以维护工作非常困难。推荐使用 docker build 命令 + Dockerfile 文件定制镜像。
+
 # 有些镜像修改之后需要另存，使用 docker commit 命令
 # 注意镜像只能运行为容器之后才能重新保存。
 docker commit -a="dsc" -m="the first commit" 要上传的容器名或id 上传后的镜像名:版本号
@@ -210,7 +212,7 @@ docker run -it -v juming_centos:/home centos /bin/bash
 ```
 
 ### （3.3）**DockerFile 的使用**
-DockerFile 是生成镜像的脚本，按照脚本的配置构建镜像。
+DockerFile 是生成镜像的脚本，按照脚本的配置构建镜像。每一步操作都清晰明确，便于后期维护。
 
 有如下名为 dockerfile01 的脚本
 ```
