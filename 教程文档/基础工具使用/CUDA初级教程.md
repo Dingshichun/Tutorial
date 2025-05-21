@@ -7,10 +7,54 @@
 * ​​线程（Thread）​​：GPU 上的最小执行单元。
 * ​​线程块（Block）​​：一组线程的集合。
 * ​​网格（Grid）​​：多个线程块的集合（本文指的都是一维网格）。一个核函数（kernel）所启动的所有线程称为一个网格（grid），同一个网格上的线程共享相同的全局内存空间，网格是线程结构的第一层次。网格又分为很多线程块（block），一个线程块包含很多线程，这是第二个层次。32 个线程为一组 warp，这是第三个层次。
-* ​​核函数（Kernel）​​：在 GPU 上运行的并行函数。核函数的声明包括 `__global__ ，__device__ , __host__` 。`__global__`声明的核函数在 device 上执行，在主机 host 上调用，调用时需要使用<<<grid,block>>>来指定核函数要执行的线程数量，比如调用核函数 helloworld<<<2,3>>>()，表示网格中有 2 个线程块，每个线程块包含 3 个线程。每一个线程都要执行核函数，并且每个线程会分配唯一的线程号 thread ID，这个 ID 值可以通过核函数的内置变量 threadidx 来获得。核函数的返回类型只能是 void ，不支持可变参数。**使用 `__global__` 定义的核函数是异步的，意味着主机 host 不会等待核函数执行完毕就会执行下一步。**
+* ​​核函数（Kernel）​​：在 GPU 上运行的并行函数。核函数的声明包括 `__global__ ，__device__ , __host__` 。`__global__`声明的核函数在 device 上执行，在主机 host 上调用，调用时需要使用<<<grid,block>>>来指定核函数要执行的线程数量，比如调用核函数 helloworld<<<2,3>>>()，表示网格中有 2 个线程块，每个线程块包含 3 个线程。每一个线程都要执行核函数，并且每个线程会分配唯一的线程号 thread ID，这个 ID 值可以通过核函数的内置变量 threadIdx 来获得。核函数的返回类型只能是 void ，不支持可变参数。**使用 `__global__` 定义的核函数是异步的，意味着主机 host 不会等待核函数执行完毕就会执行下一步。**
 `__device__`声明的是在 device 上执行，且仅可以从 device 中调用，不可以和`__global__`同时使用。
-`__host__`声明的在 host 上执行，仅可以从 host 上调用，一般省略不写，不可以和`__global__`同时使用，但是可以和`__device__`一起使用，此时函数会在 host 和 device 都编译。
+`__host__`声明的在 host 上执行，仅可以从 host 上调用，一般省略不写，不可以和`__global__`同时使用，但是可以和`__device__`一起使用，此时函数会在 host 和 device 都编译。  
+当数据被转移到 GPU 的全局内存之后，主机端调用核函数在 GPU 上进行计算。一旦内核被调用，控制权立刻被传回主机，所以，核函数在 GPU 上运行时，主机可以执行其它函数。因此，内核和主机是异步的。可以使用 `cudaDeviceSynchronize();` 进行同步，即等待内核执行完毕才将控制权传回主机。
 * 网格上的索引。
+整个网格被分为不同的块，每个块内又分为不同的线程，相当于矩阵的嵌套，包括一维和二维矩阵。  
+CUDA 有一些 dim3 类型的变量，是基于 uint3 定义的整数型向量，用来表示维度，如下：  
+blockIdx 是线程块在网格中的索引，包含 blockIdx.x、blockIdx.y、blockIdx.z  
+threadIdx 是每个块内的线程索引，包含 threadIdx.x、threadIdx.y、threadIdx.z  
+blockDim 是线程块的维度，包含 blockDim.x、blockDim.y、blockDim.z  
+gridDim 是网格的维度。  
+比如网格大小定义为 3 行 2 列，那么 gridDim.x = 2,gridDim.y = 3,未定义的 gridDim.z 默认为 1。  
+知道网格的大小和每个块所包含的线程数，就可以根据上面的变量计算出每个线程在整个网格中的索引，线程在网格中的索引也是从 0 开始的。  
+上面这些是 dim3 类型的变量，是基于 uint3 定义的整数型向量，用来表示维度
+```c++
+// 文件名为 checkIndex.cu
+__global__ void checkIndex()
+{
+    printf("threadIdx:(%d, %d, %d)  blockIdx(%d, %d, %d) blockDim(%d, %d, %d) gridDim(%d, %d, %d)\n",
+    threadIdx.x, threadIdx.y, threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, 
+    blockDim.x, blockDim.y, blockDim.z, gridDim.x, gridDim.y, gridDim.z);
+}
+int main()
+{
+    int nElem = 6; // 定义总的线程数
+    // 定义网格和块结构
+    dim3 block(3); // 每个块包含三个线程，一维数据，即一行三列
+    dim3 grid((nElem+block.x-1)/block.x); // 计算网格结构，这里是块的数量，结果为 2
+
+    // 检查网格和块的维度
+    printf("grid.x %d, grid.y %d,grid.z %d \n",grid.x,grid.y,grid.z);
+    printf("block.x %d, block.y %d,block.z %d \n",block.x,block.y,block.z);
+    checkIndex<<<grid,block>>>(); // 调用核函数，必须指定网格大小和块大小
+    cudaDeviceReset(); // 重设，清理内存
+    return 0;
+}
+// 使用 nvcc checkIndex -o checkIndex 编译后得到可执行文件 checkIndex.exe(windows中)
+// 运行的结果如下：没懂为什么 blockIdx 先是 blockIdx(1, 0, 0) 而不是 blockIdx(0, 0, 0)
+// grid.x 2, grid.y 1,grid.z 1 
+// block.x 3, block.y 1,block.z 1
+// threadIdx:(0, 0, 0)  blockIdx(1, 0, 0) blockDim(3, 1, 1) gridDim(2, 1, 1)
+// threadIdx:(1, 0, 0)  blockIdx(1, 0, 0) blockDim(3, 1, 1) gridDim(2, 1, 1)
+// threadIdx:(2, 0, 0)  blockIdx(1, 0, 0) blockDim(3, 1, 1) gridDim(2, 1, 1)
+// threadIdx:(0, 0, 0)  blockIdx(0, 0, 0) blockDim(3, 1, 1) gridDim(2, 1, 1)
+// threadIdx:(1, 0, 0)  blockIdx(0, 0, 0) blockDim(3, 1, 1) gridDim(2, 1, 1)
+// threadIdx:(2, 0, 0)  blockIdx(0, 0, 0) blockDim(3, 1, 1) gridDim(2, 1, 1)
+```
+
 ```c++
 #include <stdio.h>
 
@@ -137,7 +181,6 @@ int main()
 ### (5) CUDA 的线程索引
 1. 线程索引简介
 cuda 中的 block 和 grid 就相当于把线程划分为一些相同大小的矩阵，比如网格中 grid=2,block=2 就表示有两个 block 线程块，每个 block 中的线程数量为 2，所以总的线程数就是 2X2=4 。如果 grid=(3,3),block=(2,2),表示网格中有 3X3=9 个 block，每个 block 中有 2X2=4 个线程，总的线程数就是 3X3X2X2=36 个。作图很容易理解。  
-
 2. 网格循环
 GPU 提供的网格大小远远小于实际数据的大小时候，就要使用循环来依次处理数据的不同位置。比如一张 16X16 的图像，网格的线程数只有 4X4(假设 grid=(2,2),block=(2,2))，所以这个网格一次只能处理图像的一小部分，需要处理 16 次。
 ```c++
