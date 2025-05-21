@@ -225,7 +225,7 @@ CMD /bin/bash # 设置启动的控制台
 **docker build 命令生成镜像**
 ```
 # 进入 dockerfile01 所在目录，执行
-docker build -f dockerfile01 -t centos_dsc:v1.0 .  # 最后的 "." 不要忘记
+docker build -f dockerfile01 -t centos_dsc:v1.0 .  # 最后的 "." 不要忘记，代表本次执行的上下文路径，上下文路径是指 Docker 在构建镜像时要使用本机的文件，docker build 知道这个路径后，会将路径下的所有内容打包。
     -f filepath ，指定要从哪个 DockerFile 文件生成镜像。
     -t tag ，给镜像打标签，还可注明版本。
 ```
@@ -271,5 +271,10 @@ VOLUME ["volume01","volume02"]
 CMD echo "----end----"
 ```
 
-### （3.4）**Docker 网络**
+### （3.4）**Docker 容器日志**
+Docker 容器日志分为两类：引擎日志和容器日志。引擎日志是 Docker 本身运行的日志，容器日志是各个容器内产生的日志。操作包括查看、清理和日志驱动。
+```
+# 查看日志
+docker logs [options] container ，指定选项和容器即可查看。常用选项：--details,显示详细信息。
 
+```
